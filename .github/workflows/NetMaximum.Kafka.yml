@@ -52,9 +52,9 @@ jobs:
 
       - name: Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
-        run: git tag v${{ steps.gitversion.outputs.majorMinorPatch }}
+        run: git tag v$GITVERSION_MAJORMINORPATCH
 
       - name: Push Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
-        run: git push origin v${{ steps.gitversion.outputs.majorMinorPatch }}
+        run: git push origin v$GITVERSION_MAJORMINORPATCH
       
