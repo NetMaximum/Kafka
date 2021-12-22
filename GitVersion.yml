@@ -1,6 +1,6 @@
 mode: Mainline
 branches:
-  main:
-    regex: ^latest$
+  master:
+    regex: main
   pull-request:
     tag: pr
