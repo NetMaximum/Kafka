@@ -20,10 +20,11 @@ jobs:
         uses: gittools/actions/gitversion/setup@v0.9.7
         with:
           versionSpec: '5.2.x'
-     
-      - name: Use GitVersion
-        id: gitversion # step id used as reference for output values
+
+      - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.9.7
+        with:
+          useConfigFile: true
      
       - name: What version
         run: echo ${{ steps.gitversion.outputs.semVer }}
