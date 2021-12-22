@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "support", "support", "{6B02E278-01CD-477F-AC49-8D2BD09868CA}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\NetMaximum.Kafka.yml = .github\workflows\NetMaximum.Kafka.yml
+		GitVersion.yml = GitVersion.yml
 	EndProjectSection
 EndProject
 Global
