@@ -1,0 +1,59 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch all history for all tags and branches
+        run: git fetch --prune --unshallow
+      
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.3
+        with:
+          versionSpec: '5.2.x'
+     
+      - name: Use GitVersion
+        id: gitversion # step id used as reference for output values
+        uses: gittools/actions/gitversion/execute@v0.9.3
+     
+      - name: What version
+        run: echo ${{ steps.gitversion.outputs.semVer }}
+     
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x.x
+          
+      - name: Install dependencies
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build --configuration Release --no-restore /p:Version=${{ steps.gitversion.outputs.majorMinorPatch }}
+      
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Pack
+        run: dotnet pack src/NetMaximum.Kafka/NetMaximum.Kafka.csproj --configuration Release --no-restore --verbosity normal --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }}
+
+#      - name: Push
+#        if: github.event_name != 'pull_request'
+#        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} -s https://www.myget.org/F/blazorator/api/v3/index.json
+
+      - name: Tag
+        if: github.ref == 'refs/heads/master' && github.repository == 'NetMaximum/Kafka'
+        run: git tag v${{ steps.gitversion.outputs.majorMinorPatch }}
+
+      - name: Push Tag
+        if: github.ref == 'refs/heads/master' && github.repository == 'NetMaximum/Kafka'
+        run: git push origin v${{ steps.gitversion.outputs.majorMinorPatch }}
+      
