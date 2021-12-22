@@ -2,9 +2,9 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -50,10 +50,10 @@ jobs:
 #        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} -s https://www.myget.org/F/blazorator/api/v3/index.json
 
       - name: Tag
-        if: github.ref == 'refs/heads/master' && github.repository == 'NetMaximum/Kafka'
+        if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
         run: git tag v${{ steps.gitversion.outputs.majorMinorPatch }}
 
       - name: Push Tag
-        if: github.ref == 'refs/heads/master' && github.repository == 'NetMaximum/Kafka'
+        if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
         run: git push origin v${{ steps.gitversion.outputs.majorMinorPatch }}
       
