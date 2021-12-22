@@ -38,13 +38,13 @@ jobs:
         run: dotnet restore
       
       - name: Build
-        run: dotnet build --configuration Release --no-restore /p:Version=${{ steps.gitversion.outputs.majorMinorPatch }}
+        run: dotnet build --configuration Release --no-restore /p:Version=$GITVERSION_MAJORMINORPATCH
       
       - name: Test
         run: dotnet test --no-restore --verbosity normal
 
       - name: Pack
-        run: dotnet pack src/NetMaximum.Kafka/NetMaximum.Kafka.csproj --configuration Release --no-restore --verbosity normal --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }}
+        run: dotnet pack src/NetMaximum.Kafka/NetMaximum.Kafka.csproj --configuration Release --no-restore --verbosity normal --output nupkgs -p:PackageVersion=$GITVERSION_MAJORMINORPATCH
 
 #      - name: Push
 #        if: github.event_name != 'pull_request'
