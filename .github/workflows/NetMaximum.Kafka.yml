@@ -56,7 +56,7 @@ jobs:
       - name: Push
         # if: github.event_name != 'pull_request'
         if: github.ref == 'refs/heads/main'
-        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} -s https://nuget.pkg.github.com/NetMaximum/index.json
+        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} --source "https://nuget.pkg.github.com/NetMaximum/index.json"
         #run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
 
       - name: Tag
