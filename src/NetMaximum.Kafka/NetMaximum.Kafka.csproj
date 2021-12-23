@@ -8,6 +8,8 @@
         <PackageProjectUrl>https://github.com/NetMaximum/Kafka</PackageProjectUrl>
         <RepositoryUrl>https://github.com/NetMaximum/Kafka/</RepositoryUrl>
         <Description>A serializer that allows multiple AVRO schemas to be published and consumed from the same topic.</Description>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>embedded</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
