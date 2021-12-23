@@ -50,7 +50,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v0.1.14
         with:
-          tag_name: v${{GITVERSION_MAJORMINORPATCH}}
+          tag_name: v${{ env.GITVERSION_MAJORMINORPATCH}}
           generate_release_notes: true
 
       - name: Push
