@@ -5,6 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <PackageProjectUrl>https://github.com/NetMaximum/Kafka</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/NetMaximum/Kafka/</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
