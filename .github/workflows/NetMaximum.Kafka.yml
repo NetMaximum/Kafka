@@ -37,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       
+      - name: Register the package feed
+        run: dotnet nuget add source --username NetMaximum --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/NetMaximum/index.json"
+      
       - name: Build
         run: dotnet build --configuration Release --no-restore /p:Version=$GITVERSION_MAJORMINORPATCH
       
@@ -46,9 +49,17 @@ jobs:
       - name: Pack
         run: dotnet pack src/NetMaximum.Kafka/NetMaximum.Kafka.csproj --configuration Release --no-restore --verbosity normal --output nupkgs -p:PackageVersion=$GITVERSION_MAJORMINORPATCH
 
-#      - name: Push
-#        if: github.event_name != 'pull_request'
-#        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} -s https://www.myget.org/F/blazorator/api/v3/index.json
+      - name: Create a release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          tag_name: v$GITVERSION_MAJORMINORPATCH
+          generate_release_notes: true
+
+      - name: Push
+        # if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main'
+        run: dotnet nuget push "nupkgs/*.nupkg  --source "github"
 
       - name: Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
