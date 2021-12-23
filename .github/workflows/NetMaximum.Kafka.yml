@@ -26,9 +26,6 @@ jobs:
         with:
           useConfigFile: true
      
-      - name: What version
-        run: echo ${{ steps.gitversion.outputs.semVer }}
-     
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -53,13 +50,13 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v0.1.14
         with:
-          tag_name: v$GITVERSION_MAJORMINORPATCH
+          tag_name: v${GITVERSION_MAJORMINORPATCH}
           generate_release_notes: true
 
       - name: Push
         # if: github.event_name != 'pull_request'
         if: github.ref == 'refs/heads/main'
-        run: dotnet nuget push "nupkgs/*.nupkg  --source "github"
+        run: dotnet nuget push nupkgs/*.nupkg  --source "github"
 
       - name: Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
