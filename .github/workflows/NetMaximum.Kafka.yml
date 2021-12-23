@@ -35,7 +35,7 @@ jobs:
         run: dotnet restore
       
       - name: Register the package feed
-        run: dotnet nuget add source --username NetMaximum --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/NetMaximum/index.json"
+        run: dotnet nuget add source --username $GITHUB_ACTOR --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/NetMaximum/index.json"
       
       - name: Build
         run: dotnet build --configuration Release --no-restore /p:Version=$GITVERSION_MAJORMINORPATCH
@@ -56,8 +56,8 @@ jobs:
       - name: Push
         # if: github.event_name != 'pull_request'
         if: github.ref == 'refs/heads/main'
-        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/NetMaximum/index.json"
-        #run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+        #run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/NetMaximum/index.json"
+        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
 
       - name: Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
