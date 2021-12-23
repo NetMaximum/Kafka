@@ -56,13 +56,14 @@ jobs:
       - name: Push
         # if: github.event_name != 'pull_request'
         if: github.ref == 'refs/heads/main'
-        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} -s https://nuget.pkg.github.com/NetMaximum/index.json
+        #run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
 
       - name: Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
-        run: git tag v$GITVERSION_MAJORMINORPATCH
+        run: git tag v${GITVERSION_MAJORMINORPATCH}
 
       - name: Push Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
-        run: git push origin v$GITVERSION_MAJORMINORPATCH
+        run: git push origin v${GITVERSION_MAJORMINORPATCH}
       
