@@ -7,7 +7,7 @@ using Xunit;
 
 namespace NetMaximum.UnitTest;
 
-public class MultiTypeConfigTests
+public class MultipleTypeConfigBuilderTests
 {
     [Fact]
     public void At_least_one_type_needs_to_be_configured()
@@ -15,13 +15,12 @@ public class MultiTypeConfigTests
         // Arrange
         var subject = new MultipleTypeConfigBuilder<IEvent>();
         
-        // Act 
+        // Act - Assert 
 
-        var action = new Action(() =>
+        new Action(() =>
         {
             subject.Build();
         }).Should().Throw<NoTypesConfiguredException>();
-        
     }
 }
 
