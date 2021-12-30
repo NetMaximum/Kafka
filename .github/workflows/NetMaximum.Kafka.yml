@@ -71,22 +71,22 @@ jobs:
           name: buildartifacts
           path: ./nupkgs/
       
-      outputs:
-        version: ${{ steps.gitversion.outputs.majorMinorPatch }}
+    outputs:
+      version: ${{ steps.gitversion.outputs.majorMinorPatch }}
         
-      PushToNuget:
-        name: PushToNuget
-        if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
-        runs-on: ubuntu-latest
-        environment: Nuget
-        steps:
+  pushtonuget:
+    name: PushToNuget
+    if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
+    runs-on: ubuntu-latest
+    environment: Nuget
+    steps:
 
-          - name: Download a Build Artifact
-            uses: actions/download-artifact@v2.0.10
-            with:
-              # Artifact name
-              name: buildartifacts
-          
-          - name: Push
-            run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} 
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.0.10
+        with:
+          # Artifact name
+          name: buildartifacts
+      
+      - name: Push
+        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} 
       
