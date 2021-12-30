@@ -79,6 +79,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
     runs-on: ubuntu-latest
     environment: Nuget
+    needs: build
     steps:
 
       - name: Download a Build Artifact
@@ -88,5 +89,5 @@ jobs:
           name: buildartifacts
       
       - name: Push
-        run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} 
+        run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} 
       
