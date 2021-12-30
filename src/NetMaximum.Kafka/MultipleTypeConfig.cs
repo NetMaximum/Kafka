@@ -1,4 +1,5 @@
 using Avro;
+using NetMaximum.Kafka.Exceptions;
 
 namespace NetMaximum.Kafka
 {
@@ -12,6 +13,11 @@ namespace NetMaximum.Kafka
 
         internal MultipleTypeConfig(MultipleTypeInfo[] types)
         {
+            if (types.Length == 0)
+            {
+                throw new NoTypesConfiguredException();
+            }
+            
             _types = types;
         }
         

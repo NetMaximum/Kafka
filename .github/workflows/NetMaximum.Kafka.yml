@@ -70,6 +70,9 @@ jobs:
         with:
           name: buildartifacts
           path: ./nupkgs/
+          
+      - name: Codecov
+        uses: codecov/codecov-action@v1
       
     outputs:
       version: ${{ steps.gitversion.outputs.majorMinorPatch }}

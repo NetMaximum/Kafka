@@ -38,6 +38,9 @@ namespace NetMaximum.Kafka
             return this;
         }
        
-        public MultipleTypeConfig Build() => new(_types.ToArray());
+        public MultipleTypeConfig Build()
+        {
+            return new(_types.ToArray());
+        }
     }
 }
