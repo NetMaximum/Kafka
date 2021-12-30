@@ -54,7 +54,7 @@ namespace NetMaximum.Kafka
                 {
                     throw new InvalidDataException($"Expecting data framing of length 5 bytes or more but total data size is {data.Length} bytes");
                 }
-
+                
                 using (var stream = new MemoryStream(data.ToArray()))
                 using (var reader = new BinaryReader(stream))
                 {

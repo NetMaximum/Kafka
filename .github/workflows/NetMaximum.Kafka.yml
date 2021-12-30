@@ -65,4 +65,28 @@ jobs:
       - name: Push Tag
         if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
         run: git push origin v${GITVERSION_MAJORMINORPATCH}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: buildartifacts
+          path: ./nupkgs/
+      
+      outputs:
+        version: ${{ steps.gitversion.outputs.majorMinorPatch }}
+        
+      PushToNuget:
+        name: PushToNuget
+        if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
+        runs-on: ubuntu-latest
+        environment: Nuget
+        steps:
+
+          - name: Download a Build Artifact
+            uses: actions/download-artifact@v2.0.10
+            with:
+              # Artifact name
+              name: buildartifacts
+          
+          - name: Push
+            run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} 
       
