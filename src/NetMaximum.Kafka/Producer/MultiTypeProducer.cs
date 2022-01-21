@@ -7,7 +7,7 @@ public class MultiTypeProducer<T> : IMultiTypeProducer<T>
     private readonly IProducer<string, T> _producer;
     private readonly string _defaultTopic;
 
-    public MultiTypeProducer(IProducer<string, T> producer, string defaultTopic)
+    internal MultiTypeProducer(IProducer<string, T> producer, string defaultTopic)
     {
         _producer = producer;
         _defaultTopic = defaultTopic;

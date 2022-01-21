@@ -3,6 +3,7 @@ using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+using NetMaximum.Kafka.Consumer;
 using Schema = Avro.Schema;
 
 namespace NetMaximum.Kafka.Producer;
@@ -11,6 +12,7 @@ public class EventProcessorBuilder<T> where T : ISpecificRecord
 {
     private readonly string[] _bootStrapServers;
     private readonly MultipleTypeConfigBuilder<T> _multipleTypeConfigBuilder = new();
+    private readonly CachedSchemaRegistryClient _cachedSchemaRegistryClient;
     
     public Uri SchemaRegistryUrl { get; }
     
@@ -43,15 +45,34 @@ public class EventProcessorBuilder<T> where T : ISpecificRecord
         SchemaRegistryUrl = schemaRegistryUrl;    
         Topic = topic;
         _bootStrapServers = bootStrapServers;
-    }
-
-    
-    public IMultiTypeProducer<T> Build()
-    {
-        var schemaRegistryConfig = new SchemaRegistryConfig
+        _cachedSchemaRegistryClient = new CachedSchemaRegistryClient( new SchemaRegistryConfig
         {
             Url = SchemaRegistryUrl.ToString(),
+        });
+    }
+
+    public IMultiTypeConsumer<T> BuildConsumer(string groupId)
+    {
+        var config =  new ConsumerConfig()
+        {
+            GroupId = groupId,
+            BootstrapServers = string.Join("','", BootStrapServers),
+            AutoOffsetReset = AutoOffsetReset.Earliest
         };
+        
+        var deserializer = new MultipleTypeDeserializer<T>(_multipleTypeConfigBuilder.Build(), _cachedSchemaRegistryClient);
+
+        var consumerBuilder = new ConsumerBuilder<string, T>(config)
+            .SetKeyDeserializer(new AvroDeserializer<string>(_cachedSchemaRegistryClient).AsSyncOverAsync())
+            .SetValueDeserializer(deserializer.AsSyncOverAsync()).Build();
+        
+        consumerBuilder.Subscribe(Topic);
+        
+        return new MultiTypeConsumer<T>(consumerBuilder);
+    }
+
+    public IMultiTypeProducer<T> BuildProducer()
+    {
         
         var config =  new ProducerConfig
         {
@@ -62,11 +83,11 @@ public class EventProcessorBuilder<T> where T : ISpecificRecord
             LingerMs = LingerMs,
         };
         
-        var registry = new CachedSchemaRegistryClient(schemaRegistryConfig);
+        //var registry = new CachedSchemaRegistryClient(schemaRegistryConfig);
         
         var serializer = new MultipleTypeSerializer<T>(
             _multipleTypeConfigBuilder.Build(), 
-            registry,  
+            _cachedSchemaRegistryClient,  
             new AvroSerializerConfig
             {
                 BufferBytes = 100,
@@ -74,7 +95,7 @@ public class EventProcessorBuilder<T> where T : ISpecificRecord
             });
         
         return new MultiTypeProducer<T>(new ProducerBuilder<string,T>(config)
-            .SetKeySerializer(new AvroSerializer<string>(registry).AsSyncOverAsync())
+            .SetKeySerializer(new AvroSerializer<string>(_cachedSchemaRegistryClient).AsSyncOverAsync())
             .SetValueSerializer(serializer.AsSyncOverAsync())
             .Build(), Topic);
     }

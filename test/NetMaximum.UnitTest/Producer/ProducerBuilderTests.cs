@@ -20,7 +20,7 @@ public class ProducerBuilderTests
         _sut.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         // Act
-        var result = _sut.Build();
+        var result = _sut.BuildProducer();
         
         // Assert
         result.Should().NotBeNull();
