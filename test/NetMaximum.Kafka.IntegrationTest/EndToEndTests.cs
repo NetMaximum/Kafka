@@ -19,12 +19,17 @@ public class EndToEndTests
     public EndToEndTests(XUnit.DockerExtensions.DockerComposeFixture fixture)
     {
         fixture.Init(Path.Combine(ComposePath, "docker-compose.yml"),
-            new WaitFor("rest-proxy", "http://localhost:8082/brokers", TimeSpan.FromSeconds(30)));
+            new WaitFor("rest-proxy", "http://localhost:8082/brokers", TimeSpan.FromSeconds(30)),
+            new WaitFor("schema-registry", "http://localhost:8081/subjects", TimeSpan.FromSeconds(30)));
+        
     }
 
     [Fact]
     public void Produce_and_consume_an_event()
     {
+        // Todo : This gives the schema registry enough time to start up, needs to be fixed.
+        Thread.Sleep(10000);
+        
         // Arrange
         var topic = Guid.NewGuid().ToString();
         var processorBuilder = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
