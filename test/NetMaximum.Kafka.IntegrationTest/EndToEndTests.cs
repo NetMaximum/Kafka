@@ -27,7 +27,7 @@ public class EndToEndTests
     {
         // Arrange
         var topic = Guid.NewGuid().ToString();
-        var processorBuilder = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "host.docker.internal:9092");
+        var processorBuilder = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
         processorBuilder.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         using var sut = processorBuilder.BuildProducer();
