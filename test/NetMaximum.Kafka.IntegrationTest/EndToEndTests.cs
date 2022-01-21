@@ -28,7 +28,7 @@ public class EndToEndTests
     public void Produce_and_consume_an_event()
     {
         // Todo : This gives the schema registry enough time to start up, needs to be fixed.
-        Thread.Sleep(10000);
+        Thread.Sleep(30000);
         
         // Arrange
         var topic = Guid.NewGuid().ToString();
