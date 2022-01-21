@@ -6,6 +6,7 @@ using Confluent.SchemaRegistry.Serdes;
 
 namespace NetMaximum.Kafka.Producer;
 
+[Obsolete]
 public abstract class ProducerWrapper<T> where T : ISpecificRecord
 {
     private readonly string _topic;

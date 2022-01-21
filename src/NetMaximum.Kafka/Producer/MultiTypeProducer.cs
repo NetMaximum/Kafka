@@ -16,6 +16,9 @@ public class MultiTypeProducer<T> : IMultiTypeProducer<T>
     public void Produce(string key, T value)
     {
         _producer.Produce(_defaultTopic, new Message<string, T> {Key = key, Value = value});
+        
+        // Todo : This will be over the top.
+        _producer.Flush();
     }
 
     public void Dispose()

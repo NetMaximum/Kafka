@@ -82,8 +82,8 @@ namespace NetMaximum.Kafka
             {
                 return reader;
             }
-            // TODO - "keyed Semaphore" to download multiple schemas in parallel (currently a similar
-            // approach with a single semaphore is used in Confluent.SchemaRegistry.CachedSchemaRegistryClient)
+            /* TODO - "keyed Semaphore" to download multiple schemas in parallel (currently a similar approach
+             with a single semaphore is used in Confluent.SchemaRegistry.CachedSchemaRegistryClient) */
             await _semaphore.WaitAsync().ConfigureAwait(continueOnCapturedContext: false);
             try
             {
