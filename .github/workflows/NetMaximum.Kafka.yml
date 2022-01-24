@@ -44,27 +44,15 @@ jobs:
         run: dotnet test ./Kafka.sln -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover --no-build --verbosity normal --no-restore -c Release
 
       - name: Pack
-        run: dotnet pack src/NetMaximum.Kafka/NetMaximum.Kafka.csproj --configuration Release --no-restore --verbosity normal --output nupkgs -p:PackageVersion=$GITVERSION_MAJORMINORPATCH
-
-      - name: Create a release
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v0.1.14
-        with:
-          tag_name: v${{ env.GITVERSION_MAJORMINORPATCH}}
-          generate_release_notes: true
+        run: dotnet pack src/NetMaximum.Kafka/NetMaximum.Kafka.csproj --configuration Release --no-restore --verbosity normal --output nupkgs -p:PackageVersion=$GITVERSION_MAJORMINORPATCH
+        
+      - name: Pack
+        if: github.event_name == 'pull_request'
+        run: dotnet pack src/NetMaximum.Kafka/NetMaximum.Kafka.csproj --configuration Release --no-restore --verbosity normal --output nupkgs -p:PackageVersion=$GITVERSION_NUGETVERSION
 
       - name: Push
-        # if: github.event_name != 'pull_request'
-        if: github.ref == 'refs/heads/main'
         run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
-
-      - name: Tag
-        if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
-        run: git tag v${GITVERSION_MAJORMINORPATCH}
-
-      - name: Push Tag
-        if: github.ref == 'refs/heads/main' && github.repository == 'NetMaximum/Kafka'
-        run: git push origin v${GITVERSION_MAJORMINORPATCH}
 
       - uses: actions/upload-artifact@v2
         with:
@@ -88,9 +76,14 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.0.10
         with:
-          # Artifact name
           name: buildartifacts
-      
+          
+      - name: Create a release
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          tag_name: v${{ needs.build.outputs.version }}
+          generate_release_notes: true
+          
       - name: Push
         run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source "nuget.org"
       

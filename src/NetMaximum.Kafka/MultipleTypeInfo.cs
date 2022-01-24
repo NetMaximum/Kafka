@@ -26,7 +26,7 @@ namespace NetMaximum.Kafka
             AvroSerializerConfig serializerConfig);
     }
 
-    public class MultipleTypeInfo<T> : MultipleTypeInfo where T : ISpecificRecord
+    internal class MultipleTypeInfo<T> : MultipleTypeInfo where T : ISpecificRecord
     {
         public MultipleTypeInfo(Type messageType, Schema schema) : base(messageType, schema)
         {

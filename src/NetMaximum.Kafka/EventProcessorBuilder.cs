@@ -4,9 +4,10 @@ using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using NetMaximum.Kafka.Consumer;
+using NetMaximum.Kafka.Producer;
 using Schema = Avro.Schema;
 
-namespace NetMaximum.Kafka.Producer;
+namespace NetMaximum.Kafka;
 
 public class EventProcessorBuilder<T> where T : ISpecificRecord
 {
@@ -82,8 +83,6 @@ public class EventProcessorBuilder<T> where T : ISpecificRecord
             CompressionType = CompressionType.Snappy,
             LingerMs = LingerMs,
         };
-        
-        //var registry = new CachedSchemaRegistryClient(schemaRegistryConfig);
         
         var serializer = new MultipleTypeSerializer<T>(
             _multipleTypeConfigBuilder.Build(), 

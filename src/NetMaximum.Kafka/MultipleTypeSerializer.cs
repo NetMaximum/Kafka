@@ -15,7 +15,7 @@ namespace NetMaximum.Kafka
     ///       bytes 1-4:        Unique global id of the Avro schema that was used for encoding (as registered in Confluent Schema Registry), big endian.
     ///       following bytes:  The serialized data.
     /// </remarks>
-    public class MultipleTypeSerializer<T> : IAsyncSerializer<T>
+    internal class MultipleTypeSerializer<T> : IAsyncSerializer<T>
     {
         private readonly MultipleTypeConfig _typeConfig;
         private readonly ISchemaRegistryClient _schemaRegistryClient;

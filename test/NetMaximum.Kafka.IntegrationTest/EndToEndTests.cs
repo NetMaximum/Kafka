@@ -60,6 +60,63 @@ public class EndToEndTests
 
         // Assert
         result.Should().NotBeNull();
+    }
 
+    [Fact]
+    public void Handles_an_unknown_schema_being_delivered()
+    {
+        // Arrange
+        var topic = Guid.NewGuid().ToString();
+        
+        var produceEventProcessor = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
+        produceEventProcessor.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        produceEventProcessor.AddSerialisationType<StaffMemberTerminated>(StaffMemberTerminated._SCHEMA);
+        
+        var consumerEventProcessor = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
+        consumerEventProcessor.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        
+        using var sut = produceEventProcessor.BuildProducer();
+
+        var @invalidEvent = new StaffMemberTerminated
+        {
+            EventId = "eventId",
+            TraceId = Guid.NewGuid(),
+            StaffMemberId = Guid.NewGuid(),
+            TimeFrame = new TimeFrame
+            {
+                StartDate = DateTime.Now.ToLongDateString(),
+                EndDate = DateTime.Now.AddHours(60).ToLongDateString()
+            }
+        };
+        
+        var @event = new StaffMemberCreated
+        {
+            Name = new Name()
+            {
+                FirstName = "Bob",
+                LastName = "Dylan"
+            },
+            EventId = "eventId",
+            TraceId = Guid.NewGuid(),
+            StaffMemberId = Guid.NewGuid(),
+            TimeFrame = new TimeFrame
+            {
+                StartDate = DateTime.Now.ToLongDateString(),
+                EndDate = DateTime.Now.AddHours(60).ToLongDateString()
+            }
+        };
+        
+        var streamId = Guid.NewGuid().ToString();
+        sut.Produce(streamId, invalidEvent);
+        sut.Produce(streamId, @event);
+
+        // Act
+        using var sut2 = consumerEventProcessor.BuildConsumer("my-group");
+        
+        using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        var result = sut2.Consume(cancellationTokenSource.Token);
+
+        // Assert
+        result.Should().NotBeNull();
     }
 }

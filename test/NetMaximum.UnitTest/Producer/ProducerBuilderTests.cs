@@ -3,6 +3,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using FluentAssertions;
+using NetMaximum.Kafka;
 using NetMaximum.Kafka.Producer;
 using Staff.Stream.AvroContracts;
 using Xunit;
@@ -26,6 +27,19 @@ public class ProducerBuilderTests
         result.Should().NotBeNull();
     }
 
+    [Fact]
+    public void Can_build_a_new_consumer()
+    {
+        // Arrange
+        _sut.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        
+        // Act
+        var result = _sut.BuildConsumer("my-group");
+        
+        // Assert
+        result.Should().NotBeNull();
+    }
+    
     [Fact]
     public void Must_have_a_valid_registry_uri_format()
     {
