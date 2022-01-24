@@ -1,0 +1,42 @@
+{
+  "name": "StaffMemberTerminated",
+  "type": "record",
+  "namespace": "Staff.Stream.AvroContracts",
+  "fields": [
+    {
+      "name": "TraceId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "StaffMemberId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "EventId",
+      "type": "string"
+    },
+    {
+      "name": "TimeFrame",
+      "type": {
+        "name": "TimeFrame",
+        "type": "record",
+        "fields": [
+          {
+            "name": "StartDate",
+            "type": "string"
+          },
+          {
+            "name": "EndDate",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

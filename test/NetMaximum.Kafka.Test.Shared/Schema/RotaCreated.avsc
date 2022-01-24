@@ -1,0 +1,32 @@
+{
+  "name": "RotaCreated",
+  "type": "record",
+  "namespace": "Rota.Stream.AvroContracts",
+  "fields": [
+    {
+      "name": "RotaId",
+      "type": "string"
+    },
+    {
+      "name": "EventId",
+      "type": "string"
+    },
+    {
+      "name": "TimeFrame",
+      "type": {
+        "name": "TimeFrame",
+        "type": "record",
+        "fields": [
+          {
+            "name": "StartDate",
+            "type": "string",
+          },
+          {
+            "name": "EndDate",
+            "type": "string",
+          }
+        ]
+      }
+    }
+  ]
+}

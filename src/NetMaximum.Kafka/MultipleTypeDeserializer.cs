@@ -16,7 +16,7 @@ namespace NetMaximum.Kafka
     ///       bytes 1-4:        Unique global id of the Avro schema that was used for encoding (as registered in Confluent Schema Registry), big endian.
     ///       following bytes:  The serialized data.
     /// </remarks>
-    public class MultipleTypeDeserializer<T> : IAsyncDeserializer<T>
+    internal class MultipleTypeDeserializer<T> : IAsyncDeserializer<T>
     {
         public const byte MagicByte = 0;
         private readonly ISchemaRegistryClient _schemaRegistryClient;
@@ -82,8 +82,8 @@ namespace NetMaximum.Kafka
             {
                 return reader;
             }
-            // TODO - "keyed Semaphore" to download multiple schemas in parallel (currently a similar
-            // approach with a single semaphore is used in Confluent.SchemaRegistry.CachedSchemaRegistryClient)
+            /* TODO - "keyed Semaphore" to download multiple schemas in parallel (currently a similar approach
+             with a single semaphore is used in Confluent.SchemaRegistry.CachedSchemaRegistryClient) */
             await _semaphore.WaitAsync().ConfigureAwait(continueOnCapturedContext: false);
             try
             {
