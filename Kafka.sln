@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "support", "support", "{6B02
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{60A531D3-A7AF-4DA3-BFE1-F129FFB8FCC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetMaximum.UnitTest", "test\NetMaximum.UnitTest\NetMaximum.UnitTest.csproj", "{6DCD3028-A220-43F6-BFCC-EF88FB816DF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetMaximum.Kafka.UnitTest", "test\NetMaximum.Kafka.UnitTest\NetMaximum.Kafka.UnitTest.csproj", "{6DCD3028-A220-43F6-BFCC-EF88FB816DF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetMaximum.Kafka.IntegrationTest", "test\NetMaximum.Kafka.IntegrationTest\NetMaximum.Kafka.IntegrationTest.csproj", "{B70A6C13-CA0F-4FED-BE6A-EEAF85FC3738}"
 EndProject

@@ -5,7 +5,7 @@
 
 * ~~Handling unregistered schemas~~
 * ~~Returning ConsumeResult.~~
-* Autocommit and manual commit.
+* ~~Autocommit and manual commit.~~
 * Change Type on ConsumeResult
 * Wrap more things with a generic exception.
 * Docs for producer and consumer.

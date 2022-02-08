@@ -16,7 +16,7 @@ namespace NetMaximum.Kafka
         {
             if (types.Length == 0)
             {
-                throw new NoTypesConfiguredException();
+                throw new NoTypesConfiguredException("No types where configured");
             }
             
             _types = types;

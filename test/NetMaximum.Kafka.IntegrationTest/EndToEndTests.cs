@@ -31,8 +31,11 @@ public class EndToEndTests
         // Arrange
         var topic = Guid.NewGuid().ToString();
         var key = Guid.NewGuid().ToString();
-        var processorBuilder = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
+        var processorBuilder = new EventProducerBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
         processorBuilder.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        
+        var consumerBuilder = new EventConsumerBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
+        consumerBuilder.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         using var sut = processorBuilder.BuildProducer();
 
@@ -57,7 +60,7 @@ public class EndToEndTests
         
         sut.Produce(key, @event);
 
-        using var consumer = processorBuilder.BuildConsumer("MyGroup");
+        using var consumer = consumerBuilder.BuildConsumer("MyGroup");
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         var result = consumer.Consume(cancellationTokenSource.Token);
 
@@ -73,13 +76,13 @@ public class EndToEndTests
         // Arrange
         var topic = Guid.NewGuid().ToString();
         
-        var produceEventProcessor = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
+        var produceEventProcessor = new EventProducerBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
         produceEventProcessor.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         produceEventProcessor.WithSerialisationType<StaffMemberTerminated>(StaffMemberTerminated._SCHEMA);
         
-        var consumerEventProcessor = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
+        var eventConsumerBuilder = new EventConsumerBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
         
-        consumerEventProcessor
+        eventConsumerBuilder
             .WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA)
             .WithIgnoreUnknownTypes(true);
         
@@ -119,7 +122,7 @@ public class EndToEndTests
         sut.Produce(key, @event);
 
         // Act
-        using var sut2 = consumerEventProcessor.BuildConsumer("my-group");
+        using var sut2 = eventConsumerBuilder.BuildConsumer("my-group");
         
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         var result = sut2.Consume(cancellationTokenSource.Token);

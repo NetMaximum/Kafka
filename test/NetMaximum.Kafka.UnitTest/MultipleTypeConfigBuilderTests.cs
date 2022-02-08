@@ -4,10 +4,11 @@ using Avro;
 using FluentAssertions;
 using NetMaximum.Kafka;
 using NetMaximum.Kafka.Exceptions;
+using NetMaximum.UnitTest;
 using Staff.Stream.AvroContracts;
 using Xunit;
 
-namespace NetMaximum.UnitTest;
+namespace NetMaximum.Kafka.UnitTest;
 
 public class MultipleTypeConfigBuilderTests
 {

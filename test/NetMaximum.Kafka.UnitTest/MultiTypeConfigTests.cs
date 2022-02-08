@@ -1,4 +1,4 @@
-namespace NetMaximum.UnitTest;
+namespace NetMaximum.Kafka.UnitTest;
 
 public class MultiTypeConfigTests
 {

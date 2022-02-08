@@ -8,6 +8,7 @@ public class MultiTypeConsumer<T> : IMultiTypeConsumer<T>
 
     internal MultiTypeConsumer(IConsumer<string, T> innerConsumer)
     {
+        
         _innerConsumer = innerConsumer;
     }
 
@@ -29,7 +30,7 @@ public class MultiTypeConsumer<T> : IMultiTypeConsumer<T>
 
             if (result.Message != null && result.Message.Value != null)
             {
-                return new(result.Message.Key, result.Message.Value);
+                return new(result.Message.Key, result.Message.Value, result, _innerConsumer);
             }
         }
 
