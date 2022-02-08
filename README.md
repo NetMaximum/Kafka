@@ -1,6 +1,18 @@
 # Kafka 
 [![codecov](https://codecov.io/gh/NetMaximum/Kafka/branch/main/graph/badge.svg?token=6WFO7GEF8O)](https://codecov.io/gh/NetMaximum/Kafka)
 
+## Todo
+
+* ~~Handling unregistered schemas~~
+* ~~Returning ConsumeResult.~~
+* ~~Autocommit and manual commit.~~
+* Change Type on ConsumeResult
+* Wrap more things with a generic exception.
+* Docs for producer and consumer.
+* Integration tests fail due to docker services not fully initialised on early runs of End2End tests.
+* Create the topic with the correct subject strategy.
+* Pass the config in correctly.
+
 ## Install the tool (One time)
 
 ```

@@ -18,7 +18,7 @@ namespace NetMaximum.Kafka
     /// </remarks>
     internal class MultipleTypeDeserializer<T> : IAsyncDeserializer<T>
     {
-        public const byte MagicByte = 0;
+        private const byte MagicByte = 0;
         private readonly ISchemaRegistryClient _schemaRegistryClient;
         private readonly MultipleTypeConfig _typeConfig;
         private readonly ConcurrentDictionary<int, IReaderWrapper> _readers = new();
@@ -66,6 +66,10 @@ namespace NetMaximum.Kafka
                     var schemaId = IPAddress.NetworkToHostOrder(reader.ReadInt32());
 
                     var readerWrapper = await GetReader(schemaId);
+                    if (readerWrapper == null)
+                    {
+                        return default;
+                    }
                     return (T) readerWrapper.Read(new BinaryDecoder(stream));
                 }
             }
@@ -95,6 +99,12 @@ namespace NetMaximum.Kafka
                         .ConfigureAwait(continueOnCapturedContext: false);
                     var avroSchema = Avro.Schema.Parse(registrySchema.SchemaString);
                     reader = _typeConfig.CreateReader(avroSchema);
+
+                    if (reader == null)
+                    {
+                        return null;
+                    }
+                    
                     _readers[schemaId] = reader;
                 }
                 return reader;

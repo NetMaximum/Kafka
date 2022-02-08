@@ -3,22 +3,24 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using FluentAssertions;
-using NetMaximum.Kafka;
+using NetMaximum.Kafka.Consumer;
 using NetMaximum.Kafka.Producer;
+using NetMaximum.UnitTest;
 using Staff.Stream.AvroContracts;
 using Xunit;
 
-namespace NetMaximum.UnitTest.Producer;
+namespace NetMaximum.Kafka.UnitTest.Producer;
 
 public class ProducerBuilderTests
 {
-    private readonly EventProcessorBuilder<IStaffMemberEvent> _sut = new( new Uri("http://localhost:6000"), "topic", "http://localhost:9001");
+    private readonly EventProducerBuilder<IStaffMemberEvent> _sut = new( new Uri("http://localhost:6000"), "topic", "http://localhost:9001");
+    private readonly EventConsumerBuilder<IStaffMemberEvent> _cut = new( new Uri("http://localhost:6000"), "topic", "http://localhost:9001");
 
     [Fact]
     public void Can_build_a_new_producer()
     {
         // Arrange
-        _sut.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        _sut.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         // Act
         var result = _sut.BuildProducer();
@@ -31,10 +33,10 @@ public class ProducerBuilderTests
     public void Can_build_a_new_consumer()
     {
         // Arrange
-        _sut.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        _cut.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         // Act
-        var result = _sut.BuildConsumer("my-group");
+        var result = _cut.BuildConsumer("my-group");
         
         // Assert
         result.Should().NotBeNull();
@@ -46,7 +48,7 @@ public class ProducerBuilderTests
         // Arrange - Act
         var subject = new Action(() =>
         {
-            var _ = new EventProcessorBuilder<IStaffMemberEvent>(null, "topic", "http://localhost:9001");
+            var _ = new EventProducerBuilder<IStaffMemberEvent>(null, "topic", "http://localhost:9001");
         });
         
         // Assert
@@ -62,7 +64,7 @@ public class ProducerBuilderTests
         // Arrange - Act
         var subject = new Action(() =>
         {
-            var _ = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://local"), value, "http://localhost:9001");
+            var _ = new EventProducerBuilder<IStaffMemberEvent>(new Uri("http://local"), value, "http://localhost:9001");
         });
         
         // Assert
@@ -75,7 +77,7 @@ public class ProducerBuilderTests
         // Arrange - Act
         var subject = new Action(() =>
         {
-            var _ = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://local"), "topic", null);
+            var _ = new EventProducerBuilder<IStaffMemberEvent>(new Uri("http://local"), "topic", null);
         });
         
         // Assert
@@ -88,7 +90,7 @@ public class ProducerBuilderTests
         // Arrange - Act
         var subject = new Action(() =>
         {
-            var _ = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://local"), "topic", Array.Empty<string>());
+            var _ = new EventProducerBuilder<IStaffMemberEvent>(new Uri("http://local"), "topic", Array.Empty<string>());
         });
         
         // Assert

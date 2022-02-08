@@ -1,6 +1,6 @@
 namespace NetMaximum.Kafka.Consumer;
 
-public interface IMultiTypeConsumer<in T> : IDisposable
+public interface IMultiTypeConsumer<T> : IDisposable
 {
-    object Consume(CancellationToken cancellationToken = default);
+    ConsumerResult<string, T>? Consume(CancellationToken cancellationToken = default);
 }

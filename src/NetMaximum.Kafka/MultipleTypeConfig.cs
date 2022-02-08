@@ -10,24 +10,32 @@ namespace NetMaximum.Kafka
     public class MultipleTypeConfig
     {
         private readonly MultipleTypeInfo[] _types;
+        private readonly bool _ignoreUnknownType;
 
-        internal MultipleTypeConfig(MultipleTypeInfo[] types)
+        internal MultipleTypeConfig(MultipleTypeInfo[] types, bool ignoreUnknownType)
         {
             if (types.Length == 0)
             {
-                throw new NoTypesConfiguredException();
+                throw new NoTypesConfiguredException("No types where configured");
             }
             
             _types = types;
+            _ignoreUnknownType = ignoreUnknownType;
         }
         
-        public IReaderWrapper CreateReader(Schema writerSchema)
+        public IReaderWrapper? CreateReader(Schema writerSchema)
         {
             var type = _types.SingleOrDefault(x => x.Schema.Fullname == writerSchema.Fullname);
             if (type == null)
             {
+                if (_ignoreUnknownType)
+                {
+                    return null;
+                }
+                
                 throw new ArgumentException($"Unexpected type {writerSchema.Fullname}. Supported types need to be added to this {nameof(MultipleTypeConfig)} instance", nameof(writerSchema));
             }
+
             return type.CreateReader(writerSchema);
         }
 
