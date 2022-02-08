@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using FluentAssertions;
+using NetMaximum.Kafka.Consumer;
 using NetMaximum.Kafka.Producer;
 using NetMaximum.UnitTest;
 using NetMaximum.XUnit.DockerExtensions;
@@ -29,8 +30,9 @@ public class EndToEndTests
     {
         // Arrange
         var topic = Guid.NewGuid().ToString();
+        var key = Guid.NewGuid().ToString();
         var processorBuilder = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
-        processorBuilder.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        processorBuilder.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         using var sut = processorBuilder.BuildProducer();
 
@@ -52,7 +54,8 @@ public class EndToEndTests
         };
 
         // Act
-        sut.Produce(Guid.NewGuid().ToString(), @event);
+        
+        sut.Produce(key, @event);
 
         using var consumer = processorBuilder.BuildConsumer("MyGroup");
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
@@ -60,6 +63,8 @@ public class EndToEndTests
 
         // Assert
         result.Should().NotBeNull();
+        result.Key.Should().Be(key);
+        result.Value.Should().BeEquivalentTo(@event);
     }
 
     [Fact]
@@ -69,11 +74,14 @@ public class EndToEndTests
         var topic = Guid.NewGuid().ToString();
         
         var produceEventProcessor = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
-        produceEventProcessor.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
-        produceEventProcessor.AddSerialisationType<StaffMemberTerminated>(StaffMemberTerminated._SCHEMA);
+        produceEventProcessor.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        produceEventProcessor.WithSerialisationType<StaffMemberTerminated>(StaffMemberTerminated._SCHEMA);
         
         var consumerEventProcessor = new EventProcessorBuilder<IStaffMemberEvent>(new Uri("http://localhost:8081"), topic, "localhost:9092");
-        consumerEventProcessor.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        
+        consumerEventProcessor
+            .WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA)
+            .WithIgnoreUnknownTypes(true);
         
         using var sut = produceEventProcessor.BuildProducer();
 
@@ -106,9 +114,9 @@ public class EndToEndTests
             }
         };
         
-        var streamId = Guid.NewGuid().ToString();
-        sut.Produce(streamId, invalidEvent);
-        sut.Produce(streamId, @event);
+        var key = Guid.NewGuid().ToString();
+        sut.Produce(key, invalidEvent);
+        sut.Produce(key, @event);
 
         // Act
         using var sut2 = consumerEventProcessor.BuildConsumer("my-group");
@@ -118,5 +126,8 @@ public class EndToEndTests
 
         // Assert
         result.Should().NotBeNull();
+        result.Key.Should().Be(key);
+        result.Value.Should().BeEquivalentTo(@event);
+        
     }
 }

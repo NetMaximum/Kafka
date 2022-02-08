@@ -6,14 +6,34 @@ public class MultiTypeConsumer<T> : IMultiTypeConsumer<T>
 {
     private readonly IConsumer<string, T> _innerConsumer;
 
-    internal MultiTypeConsumer(IConsumer<string,T> innerConsumer)
+    internal MultiTypeConsumer(IConsumer<string, T> innerConsumer)
     {
         _innerConsumer = innerConsumer;
     }
-    
-    public object Consume(CancellationToken cancellationToken = default)
+
+    public ConsumerResult<string, T>? Consume(CancellationToken cancellationToken = default)
     {
-        return _innerConsumer.Consume();
+        bool foundResult = false;
+
+        /* Loops over the consume result until it's not null
+         it does this to deal with unknown events being on a stream, which is valid.
+        */
+        while (!foundResult)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
+
+            var result = _innerConsumer.Consume(cancellationToken);
+
+            if (result.Message != null && result.Message.Value != null)
+            {
+                return new(result.Message.Key, result.Message.Value);
+            }
+        }
+
+        return null;
     }
 
     public void Dispose()

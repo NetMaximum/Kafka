@@ -18,7 +18,7 @@ public class ProducerBuilderTests
     public void Can_build_a_new_producer()
     {
         // Arrange
-        _sut.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        _sut.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         // Act
         var result = _sut.BuildProducer();
@@ -31,7 +31,7 @@ public class ProducerBuilderTests
     public void Can_build_a_new_consumer()
     {
         // Arrange
-        _sut.AddSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
+        _sut.WithSerialisationType<StaffMemberCreated>(StaffMemberCreated._SCHEMA);
         
         // Act
         var result = _sut.BuildConsumer("my-group");

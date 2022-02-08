@@ -13,6 +13,7 @@ namespace NetMaximum.Kafka
     public class MultipleTypeConfigBuilder<TBase>
     {
         private readonly List<MultipleTypeInfo> _types = new();
+        private bool _ignoreKnownTypes = false;
 
         /// <summary>
         /// Adds details about a type of message that can be deserialized by MultipleTypeDeserializer.
@@ -37,10 +38,16 @@ namespace NetMaximum.Kafka
             _types.Add(mapping);
             return this;
         }
+
+        public MultipleTypeConfigBuilder<TBase> WithIgnoreUnknownTypes(bool value)
+        {
+            _ignoreKnownTypes = value;
+            return this;
+        } 
        
         public MultipleTypeConfig Build()
         {
-            return new(_types.ToArray());
+            return new(_types.ToArray(), _ignoreKnownTypes);
         }
     }
 }

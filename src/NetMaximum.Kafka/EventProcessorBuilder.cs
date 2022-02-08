@@ -20,7 +20,7 @@ public class EventProcessorBuilder<T> where T : ISpecificRecord
     public string Topic { get; }
 
     public string[] BootStrapServers => _bootStrapServers;
-
+    
     /// <summary>
     /// Amount of time to delay between batches, helps with compression at the cost of latency.
     /// </summary>
@@ -99,9 +99,26 @@ public class EventProcessorBuilder<T> where T : ISpecificRecord
             .Build(), Topic);
     }
 
-    public EventProcessorBuilder<T> AddSerialisationType<TU>(Schema readerSchema) where TU : T
+    /// <summary>
+    /// Make a schema available for serialization and deserialization.
+    /// </summary>
+    /// <param name="readerSchema"></param>
+    /// <typeparam name="TU"></typeparam>
+    /// <returns>Builder</returns>
+    public EventProcessorBuilder<T> WithSerialisationType<TU>(Schema readerSchema) where TU : T
     {
         _multipleTypeConfigBuilder.AddType<TU>(readerSchema);
+        return this;
+    }
+
+    /// <summary>
+    /// Indicate during deserialization if unknown types in the event stream should be ignored.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public EventProcessorBuilder<T> WithIgnoreUnknownTypes(bool value)
+    {
+        _multipleTypeConfigBuilder.WithIgnoreUnknownTypes(value);
         return this;
     }
 
